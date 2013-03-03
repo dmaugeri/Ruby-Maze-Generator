@@ -19,17 +19,29 @@ class Room
 end
 
 class Maze
-    attr_accessor :map, :rows, :columns
+    attr_accessor :map, :rows, :columns, :unVisitedRooms
 
     def initialize(rows, columns)
         @rows= rows 
         @columns= columns  
         @map = Array.new(rows) {Array.new(columns){Room.new(Wall.new, Wall.new)}} 
+        @unVisitedRooms = Array.new
 
+        count = 0
         @map.each_index {|i|
             @map[i].each_index {|j|
                 @map[i][j].rowPos = i
                 @map[i][j].colPos = j
+
+                if i == @rows - 1 and j == 0
+                    @map[i][j].isVisited = true
+                end
+
+                if @map[i][j].isVisited == false
+                    @unVisitedRooms[count] = @map[i][j]
+                    count = count + 1
+                end
+
             }
         }
 
@@ -39,13 +51,9 @@ class Maze
     def generateMaze(rw, col)
 
         stack = Array.new
-        unVisitedRooms = Array.new
-        @map[rw][col].isVisited = true
         currentRoom = @map[rw][col]
 
-        unVisitedRooms = getUnVisitedRooms
-
-        while unVisitedRooms.empty? == false do
+        while @unVisitedRooms.empty? == false do
             adjacentRooms = findAdjRooms(currentRoom.rowPos, currentRoom.colPos)
 
             if adjacentRooms.empty? == false 
@@ -72,36 +80,20 @@ class Maze
                 end
 
                 currentRoom = chosenRoom
-                unVisitedRooms.delete(currentRoom)
+                @unVisitedRooms.delete(currentRoom)
 
             elsif stack.empty? == false
                 currentRoom = stack.pop
-                unVisitedRooms.delete(currentRoom)
+                @unVisitedRooms.delete(currentRoom)
             else
-                randomRoom = Random.rand(unVisitedRooms.length)
+                randomRoom = Random.rand(@unVisitedRooms.length)
                 puts randomRoom
-                currentRoom = unVisitedRooms[randomRoom]
+                currentRoom = @unVisitedRooms[randomRoom]
                 currentRoom.isVisited = true
-                unVisitedRooms.delete(currentRoom)
+                @unVisitedRooms.delete(currentRoom)
                 @map[currentRoom.rowPos][currentRoom.colPos].isVisited = true
             end
         end
-    end
-    # if there is an unvisited cell return a random cell from the map
-    def getUnVisitedRooms
-        unVisitedCells = Array.new
-        count = 0
-
-        @map.each_index {|i|
-            @map[i].each_index { |j|
-                if @map[i][j].isVisited == false
-                    unVisitedCells[count] = @map[i][j]
-                    count = count + 1
-                end
-            }
-        }
-
-        return unVisitedCells
     end
 
     def findAdjRooms(rw, col)
@@ -132,9 +124,9 @@ class Maze
 
     def printMaze
 
-        squarePiece = "|"
-        topAndBottomPiece = "-"
-        cornerPiece = "+"
+        squarePiece = "\u{2588}"
+        topAndBottomPiece = "\u{2588}"
+        cornerPiece = "\u{2588}"
 
         @map.each_index { |i|
             pipes = ""
@@ -142,7 +134,7 @@ class Maze
             @map[i].each_index { |j|
 
                 if @map[i][j].upper.broken == false
-                    dashes = dashes + cornerPiece + "-"
+                    dashes = dashes + cornerPiece + topAndBottomPiece
                 else
                     dashes = dashes + cornerPiece + " "
                 end

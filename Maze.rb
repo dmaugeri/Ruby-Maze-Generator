@@ -86,9 +86,9 @@ class Maze
 
     def printMaze
 
-        squarePiece = "|"
-        topAndBottomPiece = "-"
-        cornerPiece = "+"
+        squarePiece = "\u{2588}"
+        topAndBottomPiece = "\u{2588}"
+        cornerPiece = "\u{2588}"
 
         @map.each_index { |i|
             pipes = ""
@@ -96,7 +96,7 @@ class Maze
             @map[i].each_index { |j|
 
                 if @map[i][j].upper.broken == false
-                    dashes = dashes + cornerPiece + "-"
+                    dashes = dashes + cornerPiece + topAndBottomPiece
                 else
                     dashes = dashes + cornerPiece + " "
                 end
@@ -126,10 +126,6 @@ class Maze
 
         bottomString = (cornerPiece + topAndBottomPiece)*@columns + cornerPiece
         puts bottomString
-    end
-
-    def solveMaze
-
     end
 end
 
