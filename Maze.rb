@@ -84,7 +84,7 @@ class Maze
 
     end
 
-    def printMaze()
+    def printMaze
 
         squarePiece = "|"
         topAndBottomPiece = "-"
