@@ -9,7 +9,7 @@ class Wall
 end
 
 class Room
-    attr_accessor :left, :upper, :isVisited, :rowPos, :colPos
+    attr_accessor :left, :upper, :isVisited, :rowPos, :colPos, :roomNumber
 
     def initialize(left, upper)
         @isVisited = false
@@ -39,6 +39,7 @@ class Maze
 
                 if @map[i][j].isVisited == false
                     @unVisitedRooms[count] = @map[i][j]
+                    @map[i][j].roomNumber = count
                     count = count + 1
                 end
 
@@ -79,9 +80,16 @@ class Maze
                     @map[currentRoom.rowPos][currentRoom.colPos + 1].isVisited = true
                     chosenRoom = @map[currentRoom.rowPos][currentRoom.colPos + 1]
                 end
-
                 currentRoom = chosenRoom
-                @unVisitedRooms.delete(currentRoom)
+
+                #I make the last room number = to the current room number because i'm going to swap the positions
+                #of the current Room and the last room
+                @unVisitedRooms[@unVisitedRooms.length - 1].roomNumber = currentRoom.roomNumber
+                swap(@unVisitedRooms[currentRoom.roomNumber], @unVisitedRooms[@unVisitedRooms.length - 1])
+                
+                #I then pop off the last one thus efficiently deleting the last element of the unVisitedRooms Array
+                #because we have just visited the current room
+                @unVisitedRooms.pop
 
             elsif stack.empty? == false
                 currentRoom = stack.pop
@@ -89,9 +97,17 @@ class Maze
                 randomRoom = Random.rand(@unVisitedRooms.length)
                 currentRoom = @unVisitedRooms[randomRoom]
                 currentRoom.isVisited = true
-                swap(@unVisitedRooms[randomRoom], @unVisitedRooms[@unVisitedRooms.length - 1])
-                @unVisitedRooms.pop
                 @map[currentRoom.rowPos][currentRoom.colPos].isVisited = true
+
+                #swap room numbers of the last one in the array and the new room chosen since the two rooms positions
+                #in the unVisitedRooms array are being swapped
+                @unVisitedRooms[@unVisitedRooms.length - 1].roomNumber = randomRoom.roomNumber
+                swap(@unVisitedRooms[randomRoom], @unVisitedRooms[@unVisitedRooms.length - 1])
+
+                #effecively delete the new random room we have deleted from the array efficiently
+                @unVisitedRooms.pop
+
+
             end
         end
     end
