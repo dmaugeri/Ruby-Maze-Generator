@@ -39,6 +39,7 @@ class Maze
 
                 if @map[i][j].isVisited == false
                     @unVisitedRooms[count] = @map[i][j]
+                    #sets the room number to the index at which it's being put in the unVisited list
                     @map[i][j].roomNumber = count
                     count = count + 1
                 end
@@ -82,7 +83,7 @@ class Maze
                 end
                 currentRoom = chosenRoom
 
-                #I make the last room number = to the current room number because i'm going to swap the positions
+                #The last room number = to the current room number because i'm going to swap the positions
                 #of the current Room and the last room
                 @unVisitedRooms[@unVisitedRooms.length - 1].roomNumber = currentRoom.roomNumber
                 swap(@unVisitedRooms[currentRoom.roomNumber], @unVisitedRooms[@unVisitedRooms.length - 1])
@@ -104,10 +105,8 @@ class Maze
                 @unVisitedRooms[@unVisitedRooms.length - 1].roomNumber = randomRoom.roomNumber
                 swap(@unVisitedRooms[randomRoom], @unVisitedRooms[@unVisitedRooms.length - 1])
 
-                #effecively delete the new random room we have deleted from the array efficiently
+                #effectively delete the new random room that was visited efficiently
                 @unVisitedRooms.pop
-
-
             end
         end
     end
@@ -118,6 +117,7 @@ class Maze
         b = tmp
     end
 
+    #find whether any of the adjacent rooms have been visited or not
     def findAdjRooms(rw, col)
         adjacentRooms = Array.new
 
