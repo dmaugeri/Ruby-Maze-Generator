@@ -98,26 +98,26 @@ class Maze
             @map[i].each_index { |j|
 
                 if @map[i][j].upper.broken == false
-                    dashes = dashes + cornerPiece + topAndBottomPiece
+                    dashes = dashes << cornerPiece << topAndBottomPiece
                 else
-                    dashes = dashes + cornerPiece + " "
+                    dashes = dashes << cornerPiece << " "
                 end
 
                 if i == rows - 1 and j == 0 
-                    pipes = pipes + "  "
+                    pipes = pipes << "  "
                 else
                     if @map[i][j].left.broken == false
-                        pipes = pipes + squarePiece  + " "
+                        pipes = pipes << squarePiece <<  " "
                     else
-                        pipes = pipes + "  "
+                        pipes = pipes << "  "
                     end
 
                     if j == @columns - 1 
-                        dashes = dashes + cornerPiece
+                        dashes = dashes << cornerPiece
                         if j == columns - 1 and i == 0
-                            pipes = pipes + " "
+                            pipes = pipes << " "
                         else
-                            pipes = pipes + squarePiece
+                            pipes = pipes << squarePiece
                         end
                     end
                 end
@@ -126,7 +126,7 @@ class Maze
             puts pipes
         }
 
-        bottomString = (cornerPiece + topAndBottomPiece)*@columns + cornerPiece
+        bottomString = (cornerPiece << topAndBottomPiece)*@columns << cornerPiece
         puts bottomString
     end
 end
