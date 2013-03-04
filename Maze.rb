@@ -9,9 +9,10 @@ class Wall
 end
 
 class Room
-    attr_accessor :left, :upper, :isVisited
+    attr_accessor :left, :upper, :isVisited, :isFinalRoom
 
     def initialize(left, upper)
+        @isFinalRoom = false
         @isVisited = false
         @left = left
         @upper = upper
@@ -25,6 +26,7 @@ class Maze
         @rows= rows 
         @columns= columns  
         @map = Array.new(rows) {Array.new(columns){Room.new(Wall.new, Wall.new)}} 
+        @map[0][@columns - 1].isFinalRoom = true
         lookForWallToBreak(@rows - 1, 0)
     end
 

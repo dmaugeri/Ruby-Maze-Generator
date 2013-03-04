@@ -57,6 +57,7 @@ class Maze
             adjacentRooms = findAdjRooms(currentRoom.rowPos, currentRoom.colPos)
 
             if adjacentRooms.empty? == false 
+
                 randDirection = Random.rand(adjacentRooms.length)
                 wall = adjacentRooms[randDirection]
                 stack.push(currentRoom)
@@ -84,16 +85,21 @@ class Maze
 
             elsif stack.empty? == false
                 currentRoom = stack.pop
-                @unVisitedRooms.delete(currentRoom)
             else
                 randomRoom = Random.rand(@unVisitedRooms.length)
-                puts randomRoom
                 currentRoom = @unVisitedRooms[randomRoom]
                 currentRoom.isVisited = true
-                @unVisitedRooms.delete(currentRoom)
+                swap(@unVisitedRooms[randomRoom], @unVisitedRooms[@unVisitedRooms.length - 1])
+                @unVisitedRooms.pop
                 @map[currentRoom.rowPos][currentRoom.colPos].isVisited = true
             end
         end
+    end
+
+    def swap(a, b)
+        tmp = a
+        a = b
+        b = tmp
     end
 
     def findAdjRooms(rw, col)
