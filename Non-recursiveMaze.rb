@@ -171,7 +171,7 @@ class Maze
                     end
 
                     if j == @columns - 1 
-                        dashes = dashes + cornerPiece
+                        dashes = dashes << cornerPiece
                         if j == columns - 1 and i == 0
                             pipes = pipes << " "
                         else
@@ -189,6 +189,7 @@ class Maze
     end
 
     def solveMaze
+
     end
 end
 
