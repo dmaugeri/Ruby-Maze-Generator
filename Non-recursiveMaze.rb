@@ -9,9 +9,10 @@ class Wall
 end
 
 class Room
-    attr_accessor :left, :upper, :isVisited, :rowPos, :colPos, :roomNumber
+    attr_accessor :left, :upper, :isVisited, :rowPos, :colPos, :roomNumber, :isVisitedSolved
 
     def initialize(left, upper)
+        @isVisitedSolved = false
         @isVisited = false
         @left = left
         @upper = upper
@@ -25,7 +26,7 @@ class Maze
         @rows= rows 
         @columns= columns  
         @map = Array.new(rows) {Array.new(columns){Room.new(Wall.new, Wall.new)}} 
-        @unVisitedRooms = Array.new
+        @unVisitedRooms = []
 
         count = 0
         @map.each_index {|i|
@@ -48,11 +49,12 @@ class Maze
         }
 
         generateMaze(@rows - 1, 0)
+        solveMaze(@map[@rows-1][0], @map[0][@columns-1])
     end
 
     def generateMaze(rw, col)
 
-        stack = Array.new
+        stack = []
         currentRoom = @map[rw][col]
 
         while @unVisitedRooms.empty? == false do
@@ -119,7 +121,7 @@ class Maze
 
     #find whether any of the adjacent rooms have been visited or not
     def findAdjRooms(rw, col)
-        adjacentRooms = Array.new
+        adjacentRooms = []
 
         #if above
         if rw - 1 >= 0 and @map[rw - 1][col].isVisited == false  
@@ -142,6 +144,31 @@ class Maze
         end
         return adjacentRooms
 
+    end
+
+    def findAdjPaths(rw, col)
+        adjacentPaths = []
+        #if the current room's upper wall is broken, add the upper room to the list of paths
+        if rw - 1 >= 0 and @map[rw][col].upper.broken == true
+            adjacentPaths << @map[rw-1][col]
+        end
+
+        #if the room below the current room's upper wall is broken, add the lower room to the list of paths
+        if rw + 1 <= (@rows - 1) and @map[rw+1][col].upper.broken == true
+            adjacentPaths << @map[rw+1][col]
+        end
+
+        #if the current room's left wall is broken, add the left room to the list of possible paths
+        if col - 1 >= 0 and @map[rw][col].left.broken == true
+            adjacentPaths << @map[rw][col-1]
+        end
+
+        #if the room to the right of the current room's left wall is broken, add the right room to the list of paths
+        if col + 1 <= (@columns - 1) and @map[rw][col+1].left.broken == true
+            adjacentPaths << @map[rw][col+1]
+        end
+
+        return adjacentPaths
     end
 
     def printMaze
@@ -188,11 +215,30 @@ class Maze
         puts bottomString
     end
 
-    def solveMaze
+    def solveMaze(first, last)
+        queue = []
+        queue << first
+        first.isVisitedSolved = true
+        while queue.empty? == false
+            possible = queue.shift
+            if possible.rowPos == last.rowPos and possible.colPos == last.colPos
+                return true
+            end
 
+            adjacentRooms = findAdjPaths(possible.rowPos, possible.colPos)
+
+            adjacentRooms.each {|i|
+                if i.isVisitedSolved == false 
+                    @map[i.rowPos][i.colPos].isVisitedSolved = true
+                    queue << @map[i.rowPos][i.colPos]
+                end
+            }
+        end
     end
 end
 
-
+if ARGV.empty?
+    puts "you forgot elements"
+end
 maze = Maze.new(ARGV[0].to_i, ARGV[1].to_i)
 maze.printMaze
