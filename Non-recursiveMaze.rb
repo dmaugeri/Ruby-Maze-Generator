@@ -49,7 +49,7 @@ class Maze
         }
 
         generateMaze(@rows - 1, 0)
-        solveMaze(@map[@rows-1][0], @map[0][@columns-1])
+#        solveMaze(@map[@rows-1][0], @map[0][@columns-1])
     end
 
     def generateMaze(rw, col)
@@ -239,6 +239,8 @@ end
 
 if ARGV.empty?
     puts "you forgot elements"
+else
+    maze = Maze.new(ARGV[0].to_i, ARGV[1].to_i)
+    maze.printMaze
 end
-maze = Maze.new(ARGV[0].to_i, ARGV[1].to_i)
-maze.printMaze
+
